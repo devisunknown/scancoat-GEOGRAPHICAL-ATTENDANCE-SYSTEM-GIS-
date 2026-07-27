@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>School Settings - EduGuard GPS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        .map-gradient-overlay {
+            background: linear-gradient(180deg, rgba(248, 249, 255, 0) 0%, rgba(248, 249, 255, 0.05) 100%);
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #002045;
+            border: 4px solid #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0d1c2e",
+                        "on-primary-fixed": "#001b3c",
+                        "tertiary-fixed": "#ffdbcd",
+                        "secondary-fixed": "#9ff5c1",
+                        "primary-container": "#1a365d",
+                        "primary-fixed-dim": "#adc7f7",
+                        "on-surface-variant": "#43474e",
+                        "secondary-fixed-dim": "#83d8a6",
+                        "on-error": "#ffffff",
+                        "primary": "#002045",
+                        "outline-variant": "#c4c6cf",
+                        "on-primary-container": "#86a0cd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f47d45",
+                        "surface-variant": "#d4e4fc",
+                        "surface-container-highest": "#d4e4fc",
+                        "on-secondary-fixed": "#002111",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "tertiary": "#3e1200",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary": "#0a6c44",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#adc7f7",
+                        "surface": "#f8f9ff",
+                        "outline": "#74777f",
+                        "surface-dim": "#ccdbf4",
+                        "on-surface": "#0d1c2e",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container": "#e5eeff",
+                        "background": "#f8f9ff",
+                        "inverse-surface": "#223144"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xxl": "48px",
+                        "md": "16px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "container-margin": "24px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-low shadow-sm h-16 flex justify-between items-center px-container-margin">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="school">school</span>
+<h1 class="text-primary font-headline-md text-headline-md">EduGuard GPS</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors active:scale-95" data-icon="notifications">notifications</button>
+<div class="w-10 h-10 rounded-full bg-primary-fixed overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a school administrator in a clean modern office, soft high-key lighting, corporate and professional aesthetic, light blue and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvAQgnKRifEH0VzkkgN0cto4VuhDBaCMu5rtpCPTrZWlF3mXRMmKmzW6WSnMTqZVVo__HjtSl5AER-SPcd5MGq8NsduIxDWTQBLUCbLxAN9YNlTQaIghpNUinxYU-FiWvXE31TsScW7kV0fXZuwWru6G7YlOCx2RpkCqrcHCsIBvl3GfcnizH62gvvWRaqDcDQc-NF72yu98kUPSEN0xxTE6PsRs7Fquvr4ot1j01rNPj2N_MZ9-w_9D1bCiK8L3vYa2b-NzOdPnA"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-[280px] bg-surface-container-low border-r border-outline-variant flex-col py-lg space-y-base z-40">
+<div class="px-lg pb-md">
+<h2 class="text-primary font-headline-md text-body-md opacity-70">Teacher Console</h2>
+</div>
+<nav class="flex flex-col gap-1 px-2">
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span class="font-body-md">Flagged</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md">Students</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 bg-secondary-container text-on-secondary-container font-semibold rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-24 pb-32 md:pb-12 md:pl-[304px] px-container-margin transition-all">
+<div class="max-w-5xl mx-auto space-y-lg">
+<!-- Page Header -->
+<header class="flex flex-col gap-xs">
+<h2 class="text-on-background font-headline-lg text-headline-lg">School Configuration</h2>
+<p class="text-on-surface-variant font-body-md">Manage campus boundaries and attendance check-in protocols.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Map Picker Section (Level 1 Surface) -->
+<section class="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant overflow-hidden flex flex-col">
+<div class="p-lg flex justify-between items-center border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+<h3 class="font-headline-md text-on-background">Geofence Boundary</h3>
+</div>
+<span class="bg-secondary-container text-on-secondary-container px-sm py-1 rounded-full text-label-md">LIVE RADIUS</span>
+</div>
+<div class="relative h-[400px] w-full bg-surface-container">
+<div class="absolute inset-0 grayscale-[0.5] hover:grayscale-0 transition-all duration-500 cursor-crosshair overflow-hidden rounded-b-xl" data-alt="A detailed aerial satellite view of a modern school campus with buildings and green spaces, clear sunny day, high resolution, minimalist cartography style with professional blue and grey tones." data-location="London" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBD1IvFvJnNHsVFsesQCdkx2S4IpJB3GHmnrMm7CfeyeAbYnqc_f62z7ywur8LSfJfVEb3hMiaFe-9FvvFOsCAPPpvSrQKFqm5HSyiXr3GnyRz13SGDL8YweD2KPEx4-zzKVQF1srDAxzEdp4DZzMoDJcGUwR93H3WzjaLjJL39j8kfo0deaVInBz9tl4WpLfjnu1CZByLjWCxZJ94HdlVEpsxRN_8eGsAfcFybZt5-T4P-5PPQsoPsyg_9xXNtHfjMziNAY7-uoaY')">
+<!-- Simulated Geofence Circle -->
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-primary bg-primary/10 rounded-full transition-all duration-300 pointer-events-none" id="geofence-visual" style="width: 200px; height: 200px;">
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-white shadow-lg"></div>
+</div>
+</div>
+<!-- Map Controls Overlay -->
+<div class="absolute bottom-md right-md flex flex-col gap-sm">
+<button class="w-10 h-10 bg-white shadow-md rounded-lg flex items-center justify-center text-primary active:scale-95 transition-transform"><span class="material-symbols-outlined" data-icon="add">add</span></button>
+<button class="w-10 h-10 bg-white shadow-md rounded-lg flex items-center justify-center text-primary active:scale-95 transition-transform"><span class="material-symbols-outlined" data-icon="remove">remove</span></button>
+</div>
+<!-- Instruction Overlay -->
+<div class="absolute top-md left-md bg-white/90 backdrop-blur-md border border-outline-variant px-md py-sm rounded-lg shadow-sm max-w-xs">
+<p class="text-label-md text-on-surface-variant leading-relaxed">Drag the pin to set the center point of the primary campus building.</p>
+</div>
+</div>
+<div class="p-lg bg-surface-container-low">
+<div class="flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<label class="text-on-background font-semibold font-body-md">Check-in Radius</label>
+<span class="text-primary font-bold font-headline-md" id="radius-val">250m</span>
+</div>
+<input class="custom-slider w-full h-2 bg-outline-variant rounded-lg appearance-none cursor-pointer" id="radius-slider" max="500" min="50" step="10" type="range" value="250"/>
+<div class="flex justify-between text-label-md text-on-surface-variant uppercase tracking-wider">
+<span>50m</span>
+<span>250m</span>
+<span>500m</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Configuration Panels (Sidebar items) -->
+<div class="lg:col-span-4 space-y-lg">
+<!-- Time Window Card -->
+<section class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+<h3 class="font-headline-md text-on-background">Attendance Windows</h3>
+</div>
+<div class="space-y-md">
+<div class="space-y-base">
+<label class="text-label-md text-on-surface-variant font-semibold">MORNING SESSION</label>
+<div class="grid grid-cols-2 gap-sm">
+<div class="flex flex-col gap-xs">
+<span class="text-[10px] text-outline uppercase font-bold px-1">From</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg p-2 font-body-md text-on-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="time" value="07:30"/>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="text-[10px] text-outline uppercase font-bold px-1">Until</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg p-2 font-body-md text-on-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="time" value="09:00"/>
+</div>
+</div>
+</div>
+<div class="h-px bg-outline-variant/30 my-md"></div>
+<div class="space-y-base">
+<label class="text-label-md text-on-surface-variant font-semibold">AFTERNOON SESSION</label>
+<div class="grid grid-cols-2 gap-sm">
+<div class="flex flex-col gap-xs">
+<span class="text-[10px] text-outline uppercase font-bold px-1">From</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg p-2 font-body-md text-on-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="time" value="14:30"/>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="text-[10px] text-outline uppercase font-bold px-1">Until</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg p-2 font-body-md text-on-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="time" value="16:00"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Campus List Card -->
+<section class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="domain">domain</span>
+<h3 class="font-headline-md text-on-background">Campuses</h3>
+</div>
+<span class="text-label-md text-on-surface-variant">2 Registered</span>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-transparent hover:border-primary/20 transition-all group">
+<div class="flex flex-col">
+<span class="font-body-md font-bold text-on-background">North Wing Academy</span>
+<span class="text-label-md text-on-surface-variant">Main Campus - HQ</span>
+</div>
+<button class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="edit">edit</button>
+</div>
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-transparent hover:border-primary/20 transition-all group">
+<div class="flex flex-col">
+<span class="font-body-md font-bold text-on-background">Athletics Complex</span>
+<span class="text-label-md text-on-surface-variant">Sports &amp; Recreation</span>
+</div>
+<button class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="edit">edit</button>
+</div>
+</div>
+<button class="w-full mt-lg h-12 flex items-center justify-center gap-sm border-2 border-dashed border-outline-variant rounded-lg text-primary font-bold hover:bg-primary/5 hover:border-primary transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span>Add Campus</span>
+</button>
+</section>
+</div>
+</div>
+<!-- Sticky Save Actions -->
+<div class="flex items-center justify-end gap-md pt-lg">
+<button class="px-lg h-12 rounded-lg font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">Discard Changes</button>
+<button class="bg-primary text-on-primary px-xxl h-14 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center gap-sm">
+<span class="material-symbols-outlined" data-icon="save">save</span>
+<span>Save Configuration</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container-lowest rounded-t-xl shadow-[0px_-4px_12px_rgba(26,54,93,0.05)] border-t border-outline-variant flex justify-around items-center h-16 pb-safe px-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-label-md font-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-label-md font-label-md">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary border-t-2 border-primary pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-label-md font-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Interactive Slider Logic
+        const slider = document.getElementById('radius-slider');
+        const display = document.getElementById('radius-val');
+        const visual = document.getElementById('geofence-visual');
+
+        slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            display.textContent = `${val}m`;
+            
+            // Map logical radius to visual pixel size (linear scale simulation)
+            const visualSize = (val / 500) * 400; // 500m -> 400px (full height)
+            visual.style.width = `${visualSize}px`;
+            visual.style.height = `${visualSize}px`;
+        });
+
+        // Simple active state simulation for nav
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if(window.innerWidth < 768) {
+                    document.querySelectorAll('nav a').forEach(l => {
+                        l.classList.remove('text-primary', 'border-t-2', 'border-primary');
+                        l.classList.add('text-on-surface-variant');
+                    });
+                    link.classList.add('text-primary', 'border-t-2', 'border-primary');
+                    link.classList.remove('text-on-surface-variant');
+                }
+            });
+        });
+    </script>
+</body></html>

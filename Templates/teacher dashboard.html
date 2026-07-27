@@ -1,0 +1,356 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduGuard GPS - Teacher Console</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f8f9ff",
+                    "on-background": "#0d1c2e",
+                    "on-primary-fixed": "#001b3c",
+                    "tertiary-fixed": "#ffdbcd",
+                    "secondary-fixed": "#9ff5c1",
+                    "primary-container": "#1a365d",
+                    "primary-fixed-dim": "#adc7f7",
+                    "on-surface-variant": "#43474e",
+                    "secondary-fixed-dim": "#83d8a6",
+                    "on-error": "#ffffff",
+                    "primary": "#002045",
+                    "outline-variant": "#c4c6cf",
+                    "on-primary-container": "#86a0cd",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#f47d45",
+                    "surface-variant": "#d4e4fc",
+                    "surface-container-highest": "#d4e4fc",
+                    "on-secondary-fixed": "#002111",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "tertiary": "#3e1200",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#d6e3ff",
+                    "secondary": "#0a6c44",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#adc7f7",
+                    "surface": "#f8f9ff",
+                    "outline": "#74777f",
+                    "surface-dim": "#ccdbf4",
+                    "on-surface": "#0d1c2e",
+                    "on-primary-fixed-variant": "#2d476f",
+                    "inverse-on-surface": "#eaf1ff",
+                    "secondary-container": "#9ff5c1",
+                    "surface-container": "#e5eeff",
+                    "background": "#f8f9ff",
+                    "inverse-surface": "#223144"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "16px",
+                    "xl": "24px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xxl": "48px",
+                    "md": "16px",
+                    "base": "4px",
+                    "sm": "8px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7fafc; color: #0d1c2e; min-height: max(884px, 100dvh); }
+        .shadow-soft { box-shadow: 0px 4px 12px rgba(26, 54, 93, 0.05); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .student-row:hover { background-color: #f8f9ff; transform: translateY(-1px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- NavigationDrawer (Persistent Desktop Sidebar) -->
+<aside class="fixed left-0 top-0 h-full w-[280px] z-40 bg-surface-container-low border-r border-outline-variant flex flex-col py-lg space-y-base hidden md:flex">
+<div class="px-container-margin mb-xl">
+<h2 class="font-headline-md text-primary">Teacher Console</h2>
+</div>
+<nav class="flex-1 space-y-xs px-2">
+<a class="flex items-center px-lg py-md bg-secondary-container text-on-secondary-container font-semibold rounded-lg mx-2 transition-all duration-200 ease-in-out" href="{% url 'teacher_dashboard' %}">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-lg py-md text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 rounded-lg mx-2 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">report_problem</span>
+<span class="font-body-md text-body-md">Flagged</span>
+</a>
+<a class="flex items-center px-lg py-md text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 rounded-lg mx-2 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-body-md text-body-md">Students</span>
+</a>
+<a class="flex items-center px-lg py-md text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 rounded-lg mx-2 transition-all duration-200 ease-in-out" href="{% url 'school_settings' %}">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-container-margin pt-xl border-t border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white font-bold">
+{{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+</div>
+<div>
+<p class="text-body-sm font-semibold">{{ request.user.get_full_name|default:request.user.username }}</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Staff</p>
+</div>
+</div>
+<a href="{% url 'logout' %}" class="mt-md flex items-center gap-sm text-label-md text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm">logout</span> Log out
+</a>
+</div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="md:ml-[280px] min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 md:left-[280px] right-0 z-50 h-16 bg-surface shadow-sm flex justify-between items-center px-container-margin border-b border-outline-variant md:border-none">
+<div class="flex flex-col">
+<h1 class="font-headline-md text-primary">Teacher Console</h1>
+<p class="text-label-md text-on-surface-variant leading-none" id="current-date"></p>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none w-64" id="student-search" placeholder="Filter by student name..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant p-2 rounded-full transition-colors active:scale-95">notifications</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold cursor-pointer">
+{{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+</div>
+</div>
+</header>
+
+<!-- Page Canvas -->
+<div class="mt-16 p-container-margin space-y-lg flex-1 overflow-y-auto">
+<!-- Summary Bar: Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-soft flex items-center gap-lg border border-outline-variant/30">
+<div class="w-12 h-12 rounded-lg bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant uppercase tracking-widest">Present</p>
+<h3 class="text-headline-lg text-on-background">{{ present_count }}</h3>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-soft flex items-center gap-lg border border-outline-variant/30">
+<div class="w-12 h-12 rounded-lg bg-on-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant uppercase tracking-widest">Expected</p>
+<h3 class="text-headline-lg text-on-background">{{ expected_count }}</h3>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-soft flex items-center gap-lg border border-outline-variant/30">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">query_stats</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-end mb-1">
+<p class="text-label-md text-on-surface-variant uppercase tracking-widest">Attendance</p>
+<span class="text-body-sm font-bold text-secondary">{{ attendance_pct }}%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: {{ attendance_pct }}%;"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Real-time List Container -->
+<section class="bg-surface-container-lowest rounded-xl shadow-soft border border-outline-variant/30 overflow-hidden flex flex-col flex-1 min-h-[500px]">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+<h2 class="font-headline-md text-primary text-lg">Real-time Check-ins</h2>
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-lg border border-outline-variant text-label-md font-semibold text-on-surface-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filter
+</button>
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-lg border border-outline-variant text-label-md font-semibold text-on-surface-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined text-sm">download</span> Export
+</button>
+</div>
+</div>
+
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-md px-lg py-3 border-b border-outline-variant bg-surface-container-low/30">
+<div class="col-span-3 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Student</div>
+<div class="col-span-2 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Time</div>
+<div class="col-span-2 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Location</div>
+<div class="col-span-3 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Distance from School</div>
+<div class="col-span-2 text-label-md font-bold text-on-surface-variant uppercase tracking-wider text-right">Status</div>
+</div>
+
+<!-- Scrollable Student Rows -->
+<div class="flex-1 overflow-y-auto custom-scrollbar" id="student-rows">
+{% for record in records %}
+<div class="student-row grid grid-cols-12 gap-md px-lg py-md border-b border-outline-variant/50 items-center transition-all {% if record.status == 'rejected' %}bg-error-container/10{% endif %}">
+<div class="col-span-3 flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white font-bold text-sm shrink-0 uppercase">
+{{ record.student.user.username|slice:":2" }}
+</div>
+<div>
+<p class="text-body-md font-semibold student-name {% if record.status == 'rejected' %}text-error{% else %}text-on-background{% endif %}">
+{{ record.student.user.get_full_name|default:record.student.user.username }}
+</p>
+<p class="text-label-md text-on-surface-variant">@{{ record.student.user.username }}</p>
+</div>
+</div>
+<div class="col-span-2">
+<p class="text-body-sm text-on-surface">{{ record.timestamp|time:"h:i A" }}</p>
+</div>
+<!-- Location Field -->
+<div class="col-span-2 flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">school</span>
+<p class="text-body-sm text-on-surface font-medium truncate" title="{{ record.school.name }}">
+{{ record.school.name|default:"--" }}
+</p>
+</div>
+<div class="col-span-3 flex items-center gap-sm">
+{% if record.status == 'present' %}
+<span class="material-symbols-outlined text-secondary text-base">location_on</span>
+<p class="text-body-sm text-on-surface">Inside Zone <span class="text-xs text-on-surface-variant">({{ record.distance_meters|floatformat:0 }}m)</span></p>
+{% else %}
+<span class="material-symbols-outlined text-error text-base">error_outline</span>
+<p class="text-body-sm text-error">Out of Area <span class="text-xs">({{ record.distance_meters|floatformat:0 }}m)</span></p>
+{% endif %}
+</div>
+<div class="col-span-2 text-right">
+{% if record.status == 'present' %}
+<span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-[11px] font-bold uppercase tracking-wider">Present</span>
+{% else %}
+<span class="inline-flex px-3 py-1 rounded-full bg-error-container text-on-error-container text-[11px] font-bold uppercase tracking-wider">Rejected</span>
+{% endif %}
+</div>
+</div>
+{% empty %}
+<div class="p-xl text-center text-on-surface-variant">
+No check-ins yet today.
+</div>
+{% endfor %}
+
+{% for student in not_checked_in %}
+<div class="student-row grid grid-cols-12 gap-md px-lg py-md border-b border-outline-variant/50 items-center transition-all bg-error-container/10">
+<div class="col-span-3 flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg border border-error flex items-center justify-center text-error font-bold text-sm shrink-0 uppercase">
+{{ student.user.username|slice:":2" }}
+</div>
+<div>
+<div class="flex items-center gap-1">
+<p class="text-body-md font-semibold text-error student-name">{{ student.user.get_full_name|default:student.user.username }}</p>
+<span class="material-symbols-outlined text-error text-xs">warning</span>
+</div>
+<p class="text-label-md text-on-surface-variant">@{{ student.user.username }}</p>
+</div>
+</div>
+<div class="col-span-2">
+<p class="text-body-sm text-on-surface">--:--</p>
+</div>
+<div class="col-span-2 flex items-center gap-xs">
+<p class="text-body-sm text-on-surface-variant">--</p>
+</div>
+<div class="col-span-3 flex items-center gap-sm">
+<span class="material-symbols-outlined text-error text-base">error_outline</span>
+<p class="text-body-sm text-error">Not checked in</p>
+</div>
+<div class="col-span-2 text-right">
+<span class="inline-flex px-3 py-1 rounded-full bg-error-container text-on-error-container text-[11px] font-bold uppercase tracking-wider">Missing</span>
+</div>
+</div>
+{% endfor %}
+</div>
+<div class="p-md bg-surface-container-low border-t border-outline-variant text-center">
+<p class="text-label-md text-on-surface-variant">Showing {{ records|length }} checked in of {{ expected_count }} expected students.</p>
+</div>
+</section>
+</div>
+</main>
+
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-lowest shadow-[0px_-4px_12px_rgba(26,54,93,0.05)] border-t border-outline-variant flex justify-around items-center h-16 pb-safe px-md">
+<a class="flex flex-col items-center justify-center text-primary border-t-2 border-primary pt-2 active:scale-90 duration-200" href="{% url 'teacher_dashboard' %}">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+
+<script>
+        // Update date dynamically
+        const dateEl = document.getElementById('current-date');
+        const now = new Date();
+        const options = { weekday: 'long', month: 'long', day: 'numeric' };
+        dateEl.textContent = now.toLocaleDateString('en-US', options);
+
+        // Live search filter over server-rendered rows
+        const searchInput = document.getElementById('student-search');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('#student-rows .student-row').forEach(row => {
+                const nameEl = row.querySelector('.student-name');
+                if (!nameEl) return;
+                const name = nameEl.textContent.toLowerCase();
+                row.style.display = name.includes(query) ? 'grid' : 'none';
+            });
+        });
+
+        // Auto-refresh interval (skips reload if active on search)
+        const REFRESH_INTERVAL_MS = 15000;
+
+        setInterval(() => {
+            if (document.activeElement === searchInput) return;
+            window.location.reload();
+        }, REFRESH_INTERVAL_MS);
+    </script>
+</body></html>

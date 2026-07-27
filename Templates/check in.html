@@ -1,0 +1,500 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>EduGuard GPS - Student Check-In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<!-- Leaflet (real map) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f8f9ff",
+                    "on-background": "#0d1c2e",
+                    "on-primary-fixed": "#001b3c",
+                    "tertiary-fixed": "#ffdbcd",
+                    "secondary-fixed": "#9ff5c1",
+                    "primary-container": "#1a365d",
+                    "primary-fixed-dim": "#adc7f7",
+                    "on-surface-variant": "#43474e",
+                    "secondary-fixed-dim": "#83d8a6",
+                    "on-error": "#ffffff",
+                    "primary": "#002045",
+                    "outline-variant": "#c4c6cf",
+                    "on-primary-container": "#86a0cd",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#f47d45",
+                    "surface-variant": "#d4e4fc",
+                    "surface-container-highest": "#d4e4fc",
+                    "on-secondary-fixed": "#002111",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "tertiary": "#3e1200",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#d6e3ff",
+                    "secondary": "#0a6c44",
+                    "on-secondary-container": "#167249",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#612100",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container-low": "#eff4ff",
+                    "surface-tint": "#455f88",
+                    "surface-container-high": "#dce9ff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary-fixed-variant": "#005231",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#adc7f7",
+                    "surface": "#f8f9ff",
+                    "outline": "#74777f",
+                    "surface-dim": "#ccdbf4",
+                    "on-surface": "#0d1c2e",
+                    "on-primary-fixed-variant": "#2d476f",
+                    "inverse-on-surface": "#eaf1ff",
+                    "secondary-container": "#9ff5c1",
+                    "surface-container": "#e5eeff",
+                    "background": "#f8f9ff",
+                    "inverse-surface": "#223144"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "16px",
+                    "xl": "24px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xxl": "48px",
+                    "md": "16px",
+                    "base": "4px",
+                    "sm": "8px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7FAFC;
+            min-height: max(884px, 100dvh);
+        }
+        .check-in-glow {
+            box-shadow: 0 0 40px rgba(26, 54, 93, 0.15);
+            transition: all 0.3s ease;
+        }
+        .check-in-glow:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 20px rgba(26, 54, 93, 0.1);
+        }
+        #live-map {
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            filter: grayscale(35%) contrast(95%);
+            transition: filter 0.4s ease;
+        }
+        #live-map:hover {
+            filter: grayscale(0%) contrast(100%);
+        }
+        .student-pin {
+            width: 16px; height: 16px;
+            background: #002045;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(0,32,69,0.2);
+        }
+        .school-pin {
+            font-size: 22px;
+            transform: translate(-2px, -4px);
+        }
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+        #check-in-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-low dark:bg-surface-container shadow-sm flex justify-between items-center px-container-margin h-16 w-full">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" style="font-size: 28px;">school</span>
+<h1 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">EduGuard GPS</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-outline-variant bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+</div>
+</header>
+
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-16 pb-32 pt-lg px-container-margin max-w-md mx-auto w-full flex flex-col gap-xl">
+
+<!-- Status & Time Header -->
+<section class="flex flex-col gap-base text-center">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest" id="current-date"></p>
+<h2 class="font-display-lg text-display-lg text-primary" id="current-time">00:00 AM</h2>
+<div class="flex items-center justify-center gap-sm mt-sm">
+<div class="flex items-center gap-xs text-secondary" id="gps-status">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_4_bar</span>
+<span class="font-label-md text-label-md">Locating…</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<span class="font-label-md text-label-md text-on-surface-variant" id="gps-accuracy">± -- meters</span>
+</div>
+</section>
+
+<!-- Location Picker -->
+<section class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest" for="school-select">Check-In Location</label>
+<select id="school-select" class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest p-sm font-body-md text-body-md text-on-background focus:outline-none focus:ring-2 focus:ring-primary">
+</select>
+</section>
+
+<!-- Map Preview Card -->
+<section class="relative h-48 w-full rounded-lg overflow-hidden border border-outline-variant shadow-sm bg-white group">
+<div id="live-map"></div>
+<div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-sm py-xs rounded-lg border border-outline-variant flex items-center gap-sm z-[400] pointer-events-none">
+<span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+<span class="font-label-md text-label-md text-on-background" id="location-label">Select a location</span>
+</div>
+</section>
+
+<!-- Main Check-In Button -->
+<section class="flex-1 flex flex-col items-center justify-center py-xl">
+<button class="w-56 h-56 rounded-full bg-primary text-white check-in-glow flex flex-col items-center justify-center gap-sm active:scale-95 duration-150 relative overflow-hidden group" id="check-in-btn">
+<div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[64px]" style="font-variation-settings: 'FILL' 1;" id="check-in-icon">fingerprint</span>
+<span class="font-headline-md text-headline-md" id="check-in-label">Check In</span>
+</button>
+<p class="mt-lg font-body-sm text-body-sm text-on-surface-variant text-center px-xl" id="check-in-hint">
+    Tap to confirm your arrival at the school perimeter.
+</p>
+</section>
+
+<!-- Today's Status Badge -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-md flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" id="status-badge-icon">event_busy</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Location Attendance</p>
+<p class="font-body-md text-body-md font-semibold text-on-background" id="attendance-status-label">Not Checked In</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</section>
+</main>
+
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant dark:border-outline shadow-[0px_-4px_12px_rgba(26,54,93,0.05)] flex justify-around items-center h-16 pb-safe px-md">
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim border-t-2 border-primary pt-2 flex-1 h-full hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 flex-1 h-full hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant pt-2 flex-1 h-full hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+
+{{ schools_data|json_script:"schools-json" }}
+<script>
+        const SCHOOLS = JSON.parse(document.getElementById('schools-json').textContent);
+        const DEFAULT_SCHOOL_ID = {{ default_school_id|default:"null" }};
+        const CHECKED_IN_SCHOOL_IDS = {{ checked_in_school_ids|default:"[]" }};
+
+        let selectedSchool = SCHOOLS.find(s => s.id === DEFAULT_SCHOOL_ID) || SCHOOLS[0] || null;
+
+        const btn = document.getElementById('check-in-btn');
+        const icon = document.getElementById('check-in-icon');
+        const label = document.getElementById('check-in-label');
+        const hint = document.getElementById('check-in-hint');
+        const statusLabel = document.getElementById('attendance-status-label');
+        const statusIcon = document.getElementById('status-badge-icon');
+
+        function setButtonState({ bg, iconName, labelText }) {
+            btn.classList.remove('bg-primary', 'bg-secondary', 'bg-error');
+            btn.classList.add(bg);
+            icon.textContent = iconName;
+            label.textContent = labelText;
+        }
+
+        function updateUIForSelectedSchool() {
+            if (!selectedSchool) return;
+
+            const isAlreadyCheckedIn = CHECKED_IN_SCHOOL_IDS.includes(selectedSchool.id);
+
+            if (isAlreadyCheckedIn) {
+                setButtonState({ bg: 'bg-secondary', iconName: 'check_circle', labelText: 'Checked In' });
+                btn.disabled = true;
+
+                statusLabel.textContent = `Checked In (${selectedSchool.name})`;
+                statusLabel.className = "font-body-md text-body-md font-semibold text-secondary";
+                statusIcon.textContent = 'event_available';
+                statusIcon.className = "material-symbols-outlined text-secondary";
+                hint.textContent = `You have already checked in at ${selectedSchool.name} today.`;
+            } else {
+                setButtonState({ bg: 'bg-primary', iconName: 'fingerprint', labelText: 'Check In' });
+                btn.disabled = false;
+
+                statusLabel.textContent = 'Not Checked In';
+                statusLabel.className = "font-body-md text-body-md font-semibold text-on-background";
+                statusIcon.textContent = 'event_busy';
+                statusIcon.className = "material-symbols-outlined text-on-surface-variant";
+                hint.textContent = 'Tap to confirm your arrival at the school perimeter.';
+            }
+        }
+
+        function populateSchoolDropdown() {
+            const select = document.getElementById('school-select');
+            select.innerHTML = '';
+
+            if (SCHOOLS.length === 0) {
+                const opt = document.createElement('option');
+                opt.textContent = 'No schools registered';
+                select.appendChild(opt);
+                select.disabled = true;
+                return;
+            }
+
+            SCHOOLS.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.name;
+                if (selectedSchool && s.id === selectedSchool.id) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+
+            select.addEventListener('change', (e) => {
+                const id = parseInt(e.target.value, 10);
+                selectedSchool = SCHOOLS.find(s => s.id === id) || null;
+                drawSchoolOnMap();
+                updateUIForSelectedSchool();
+            });
+        }
+
+        const CSRF_TOKEN = "{{ csrf_token }}";
+        const CHECKIN_API_URL = "/api/checkin/";
+
+        // Update Time and Date
+        function updateDateTime() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+            const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // LIVE MAP SETUP
+        const initialCenter = selectedSchool ? [selectedSchool.latitude, selectedSchool.longitude] : [0, 0];
+        const map = L.map('live-map', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView(initialCenter, selectedSchool ? 16 : 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        let schoolMarker = null;
+        let schoolCircle = null;
+
+        function drawSchoolOnMap() {
+            if (schoolMarker) { map.removeLayer(schoolMarker); schoolMarker = null; }
+            if (schoolCircle) { map.removeLayer(schoolCircle); schoolCircle = null; }
+
+            const locationLabel = document.getElementById('location-label');
+
+            if (!selectedSchool) {
+                locationLabel.textContent = 'No location selected';
+                return;
+            }
+
+            const schoolIcon = L.divIcon({
+                className: 'school-pin',
+                html: '🏫',
+                iconSize: [24, 24]
+            });
+            schoolMarker = L.marker([selectedSchool.latitude, selectedSchool.longitude], { icon: schoolIcon })
+                .addTo(map)
+                .bindPopup(selectedSchool.name);
+
+            schoolCircle = L.circle([selectedSchool.latitude, selectedSchool.longitude], {
+                radius: selectedSchool.radius_meters,
+                color: '#002045',
+                weight: 1.5,
+                fillColor: '#002045',
+                fillOpacity: 0.08
+            }).addTo(map);
+
+            locationLabel.textContent = selectedSchool.name;
+            map.setView([selectedSchool.latitude, selectedSchool.longitude], 16);
+
+            if (studentCoords) {
+                const bounds = L.latLngBounds([
+                    [selectedSchool.latitude, selectedSchool.longitude],
+                    [studentCoords.lat, studentCoords.lon]
+                ]);
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
+        }
+
+        let studentMarker = null;
+        let studentCoords = null;
+
+        populateSchoolDropdown();
+        drawSchoolOnMap();
+        updateUIForSelectedSchool();
+
+        function locateStudent() {
+            if (!navigator.geolocation) {
+                document.getElementById('gps-status').innerHTML =
+                    '<span class="material-symbols-outlined text-[18px]">gps_off</span><span class="font-label-md text-label-md">GPS unavailable</span>';
+                return;
+            }
+
+            navigator.geolocation.watchPosition((pos) => {
+                const { latitude, longitude, accuracy } = pos.coords;
+                studentCoords = { lat: latitude, lon: longitude, accuracy };
+
+                document.getElementById('gps-status').innerHTML =
+                    '<span class="material-symbols-outlined text-[18px]">signal_cellular_4_bar</span><span class="font-label-md text-label-md">GPS Accurate</span>';
+                document.getElementById('gps-accuracy').textContent = `± ${Math.round(accuracy)} meters`;
+
+                if (!studentMarker) {
+                    const studentIcon = L.divIcon({ className: 'student-pin', iconSize: [16, 16] });
+                    studentMarker = L.marker([latitude, longitude], { icon: studentIcon })
+                        .addTo(map)
+                        .bindPopup('You are here');
+
+                    if (selectedSchool) {
+                        const bounds = L.latLngBounds([
+                            [selectedSchool.latitude, selectedSchool.longitude],
+                            [latitude, longitude]
+                        ]);
+                        map.fitBounds(bounds, { padding: [30, 30] });
+                    }
+                } else {
+                    studentMarker.setLatLng([latitude, longitude]);
+                }
+            }, (err) => {
+                document.getElementById('gps-status').innerHTML =
+                    '<span class="material-symbols-outlined text-[18px] text-error">gps_off</span><span class="font-label-md text-label-md">Location denied</span>';
+                console.error('Geolocation error:', err);
+            }, { enableHighAccuracy: true, maximumAge: 5000 });
+        }
+        locateStudent();
+
+        // Check-In Button Click Event
+        btn.addEventListener('click', async () => {
+            if (!studentCoords) {
+                alert('Still getting your location — try again in a moment.');
+                return;
+            }
+            if (!selectedSchool) {
+                alert('Please select a check-in location first.');
+                return;
+            }
+
+            btn.disabled = true;
+            setButtonState({ bg: 'bg-primary', iconName: 'hourglass_top', labelText: 'Checking…' });
+
+            try {
+                const response = await fetch(CHECKIN_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRF_TOKEN
+                    },
+                    body: JSON.stringify({
+                        school_id: selectedSchool.id,
+                        latitude: studentCoords.lat,
+                        longitude: studentCoords.lon,
+                        accuracy: studentCoords.accuracy
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.detail || `Check-in failed (HTTP ${response.status})`);
+                }
+
+                const present = result.status === 'present';
+
+                if (present) {
+                    // Record school check-in locally so switching locations respects it
+                    if (!CHECKED_IN_SCHOOL_IDS.includes(selectedSchool.id)) {
+                        CHECKED_IN_SCHOOL_IDS.push(selectedSchool.id);
+                    }
+                    updateUIForSelectedSchool();
+                } else {
+                    setButtonState({ bg: 'bg-error', iconName: 'error', labelText: 'Too Far' });
+                    statusLabel.textContent = `Rejected • ${Math.round(result.distance_meters)}m away`;
+                    statusLabel.className = "font-body-md text-body-md font-semibold text-error";
+                    statusIcon.textContent = 'event_busy';
+                    statusIcon.className = "material-symbols-outlined text-error";
+                    hint.textContent = `You're ${Math.round(result.distance_meters)}m from ${selectedSchool.name}. Move closer and try again.`;
+
+                    // Allow retry after 3s if out of radius
+                    setTimeout(() => updateUIForSelectedSchool(), 3000);
+                }
+
+            } catch (err) {
+                console.error('Check-in error:', err);
+                setButtonState({ bg: 'bg-error', iconName: 'error', labelText: 'Failed' });
+                hint.textContent = err.message || 'Something went wrong. Please try again.';
+                setTimeout(() => updateUIForSelectedSchool(), 3000);
+            }
+        });
+    </script>
+</body></html>

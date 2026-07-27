@@ -1,0 +1,381 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>School Settings - EduGuard GPS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<!-- Leaflet (real draggable map) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        #settings-map {
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #002045;
+            border: 4px solid #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0d1c2e",
+                        "on-primary-fixed": "#001b3c",
+                        "tertiary-fixed": "#ffdbcd",
+                        "secondary-fixed": "#9ff5c1",
+                        "primary-container": "#1a365d",
+                        "primary-fixed-dim": "#adc7f7",
+                        "on-surface-variant": "#43474e",
+                        "secondary-fixed-dim": "#83d8a6",
+                        "on-error": "#ffffff",
+                        "primary": "#002045",
+                        "outline-variant": "#c4c6cf",
+                        "on-primary-container": "#86a0cd",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f47d45",
+                        "surface-variant": "#d4e4fc",
+                        "surface-container-highest": "#d4e4fc",
+                        "on-secondary-fixed": "#002111",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "tertiary": "#3e1200",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary": "#0a6c44",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#adc7f7",
+                        "surface": "#f8f9ff",
+                        "outline": "#74777f",
+                        "surface-dim": "#ccdbf4",
+                        "on-surface": "#0d1c2e",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container": "#e5eeff",
+                        "background": "#f8f9ff",
+                        "inverse-surface": "#223144"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xxl": "48px",
+                        "md": "16px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "container-margin": "24px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-low shadow-sm h-16 flex justify-between items-center px-container-margin">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-headline-md">school</span>
+<h1 class="text-primary font-headline-md text-headline-md">EduGuard GPS</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors active:scale-95">notifications</button>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white font-bold border border-outline-variant">
+{{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-[280px] bg-surface-container-low border-r border-outline-variant flex-col py-lg space-y-base z-40">
+<div class="px-lg pb-md">
+<h2 class="text-primary font-headline-md text-body-md opacity-70">Teacher Console</h2>
+</div>
+<nav class="flex flex-col gap-1 px-2">
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-lg" href="{% url 'teacher_dashboard' %}">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="font-body-md">Flagged</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Students</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 bg-secondary-container text-on-secondary-container font-semibold rounded-lg" href="{% url 'school_settings' %}">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-24 pb-32 md:pb-12 md:pl-[304px] px-container-margin transition-all">
+<div class="max-w-5xl mx-auto space-y-lg">
+
+{% if messages %}
+<div class="space-y-sm">
+    {% for message in messages %}
+    <div class="px-md py-sm rounded-lg {% if message.tags == 'success' %}bg-secondary-container text-on-secondary-container{% else %}bg-error-container text-on-error-container{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Page Header -->
+<header class="flex flex-col gap-xs">
+<h2 class="text-on-background font-headline-lg text-headline-lg">School Configuration</h2>
+<p class="text-on-surface-variant font-body-md">Manage campus boundaries and attendance check-in protocols.</p>
+</header>
+
+<form method="post" action="{% url 'school_settings' school.id %}" id="settings-form">
+{% csrf_token %}
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Map Picker Section -->
+<section class="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant overflow-hidden flex flex-col">
+<div class="p-lg flex justify-between items-center border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<h3 class="font-headline-md text-on-background">Geofence Boundary</h3>
+</div>
+<div class="flex items-center gap-sm">
+<button type="button" id="use-my-location-btn" class="flex items-center gap-xs px-3 py-1.5 rounded-lg border border-outline-variant text-label-md font-semibold text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-sm">my_location</span> Use My Location
+</button>
+<span class="bg-secondary-container text-on-secondary-container px-sm py-1 rounded-full text-label-md">LIVE RADIUS</span>
+</div>
+</div>
+<div class="relative h-[400px] w-full bg-surface-container">
+<div id="settings-map"></div>
+<!-- Instruction Overlay -->
+<div class="absolute top-md left-md bg-white/90 backdrop-blur-md border border-outline-variant px-md py-sm rounded-lg shadow-sm max-w-xs z-[400] pointer-events-none">
+<p class="text-label-md text-on-surface-variant leading-relaxed">Drag the pin to set the center point of the primary campus building.</p>
+</div>
+</div>
+<div class="p-lg bg-surface-container-low">
+<div class="flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<label class="text-on-background font-semibold font-body-md">Check-in Radius</label>
+<span class="text-primary font-bold font-headline-md" id="radius-val">{{ school.radius_meters }}m</span>
+</div>
+<input class="custom-slider w-full h-2 bg-outline-variant rounded-lg appearance-none cursor-pointer" id="radius-slider" max="500" min="50" step="10" type="range" value="{{ school.radius_meters }}"/>
+<div class="flex justify-between text-label-md text-on-surface-variant uppercase tracking-wider">
+<span>50m</span>
+<span>250m</span>
+<span>500m</span>
+</div>
+<div class="grid grid-cols-3 gap-md mt-sm text-label-md text-on-surface-variant">
+    <div>Lat: <span id="lat-display" class="font-mono text-on-background">{{ school.latitude|floatformat:5 }}</span></div>
+    <div>Lon: <span id="lon-display" class="font-mono text-on-background">{{ school.longitude|floatformat:5 }}</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Configuration Panels (Sidebar items) -->
+<div class="lg:col-span-4 space-y-lg">
+<!-- Campus Name Card -->
+<section class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">domain</span>
+<h3 class="font-headline-md text-on-background">Campus Name</h3>
+</div>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg p-3 font-body-md text-on-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" name="name" type="text" value="{{ school.name }}" required/>
+</section>
+<!-- Campus List Card -->
+<section class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">domain</span>
+<h3 class="font-headline-md text-on-background">Campuses</h3>
+</div>
+<span class="text-label-md text-on-surface-variant">{{ schools|length }} Registered</span>
+</div>
+<div class="space-y-sm">
+{% for s in schools %}
+<a href="{% url 'school_settings' s.id %}" class="flex items-center justify-between p-md rounded-lg border {% if s.id == school.id %}border-primary bg-primary/5{% else %}border-transparent bg-surface-container-low hover:border-primary/20{% endif %} transition-all group">
+<div class="flex flex-col">
+<span class="font-body-md font-bold text-on-background">{{ s.name }}</span>
+<span class="text-label-md text-on-surface-variant">Radius: {{ s.radius_meters }}m</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">edit</span>
+</a>
+{% endfor %}
+</div>
+</section>
+</div>
+</div>
+<!-- Hidden fields updated by the map drag handler -->
+<input type="hidden" name="latitude" id="latitude-input" value="{{ school.latitude }}"/>
+<input type="hidden" name="longitude" id="longitude-input" value="{{ school.longitude }}"/>
+<input type="hidden" name="radius_meters" id="radius-input" value="{{ school.radius_meters }}"/>
+
+<!-- Sticky Save Actions -->
+<div class="flex items-center justify-end gap-md pt-lg">
+<a href="{% url 'school_settings' school.id %}" class="px-lg h-12 flex items-center rounded-lg font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">Discard Changes</a>
+<button type="submit" class="bg-primary text-on-primary px-xxl h-14 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center gap-sm">
+<span class="material-symbols-outlined">save</span>
+<span>Save Configuration</span>
+</button>
+</div>
+</form>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container-lowest rounded-t-xl shadow-[0px_-4px_12px_rgba(26,54,93,0.05)] border-t border-outline-variant flex justify-around items-center h-16 pb-safe px-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="{% url 'teacher_dashboard' %}">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-md font-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary border-t-2 border-primary pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</nav>
+<script>
+        // ---------------------------------------------------------
+        // DRAGGABLE LEAFLET MAP — sets latitude/longitude hidden inputs
+        // ---------------------------------------------------------
+        const initialLat = {{ school.latitude }};
+        const initialLon = {{ school.longitude }};
+        const initialRadius = {{ school.radius_meters }};
+
+        const map = L.map('settings-map').setView([initialLat, initialLon], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const marker = L.marker([initialLat, initialLon], { draggable: true }).addTo(map);
+
+        const circle = L.circle([initialLat, initialLon], {
+            radius: initialRadius,
+            color: '#002045',
+            weight: 1.5,
+            fillColor: '#002045',
+            fillOpacity: 0.1
+        }).addTo(map);
+
+        const latInput = document.getElementById('latitude-input');
+        const lonInput = document.getElementById('longitude-input');
+        const latDisplay = document.getElementById('lat-display');
+        const lonDisplay = document.getElementById('lon-display');
+
+        function updateLatLonFields(latlng) {
+            latInput.value = latlng.lat.toFixed(6);
+            lonInput.value = latlng.lng.toFixed(6);
+            latDisplay.textContent = latlng.lat.toFixed(5);
+            lonDisplay.textContent = latlng.lng.toFixed(5);
+            circle.setLatLng(latlng);
+        }
+
+        marker.on('drag', (e) => updateLatLonFields(e.target.getLatLng()));
+        marker.on('dragend', (e) => updateLatLonFields(e.target.getLatLng()));
+
+        // Clicking anywhere on the map also moves the pin
+        map.on('click', (e) => {
+            marker.setLatLng(e.latlng);
+            updateLatLonFields(e.latlng);
+        });
+
+        // ---------------------------------------------------------
+        // RADIUS SLIDER — updates the circle live + hidden input
+        // ---------------------------------------------------------
+        const slider = document.getElementById('radius-slider');
+        const display = document.getElementById('radius-val');
+        const radiusInput = document.getElementById('radius-input');
+
+        slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            display.textContent = `${val}m`;
+            radiusInput.value = val;
+            circle.setRadius(Number(val));
+        });
+
+        // ---------------------------------------------------------
+        // USE MY LOCATION — centers the map + moves the pin to the
+        // device's actual GPS position (does NOT save until you
+        // click "Save Configuration")
+        // ---------------------------------------------------------
+        const useMyLocationBtn = document.getElementById('use-my-location-btn');
+
+        useMyLocationBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported on this device/browser.');
+                return;
+            }
+
+            const originalContent = useMyLocationBtn.innerHTML;
+            useMyLocationBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> Locating…';
+            useMyLocationBtn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    const newLatLng = L.latLng(latitude, longitude);
+
+                    marker.setLatLng(newLatLng);
+                    map.setView(newLatLng, 17);
+                    updateLatLonFields(newLatLng);
+
+                    useMyLocationBtn.innerHTML = originalContent;
+                    useMyLocationBtn.disabled = false;
+                },
+                (err) => {
+                    console.error('Geolocation error:', err);
+                    alert('Could not get your location — check that location permission is allowed for this site.');
+                    useMyLocationBtn.innerHTML = originalContent;
+                    useMyLocationBtn.disabled = false;
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        });
+    </script>
+</body></html>
