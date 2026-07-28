@@ -1,0 +1,345 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduGuard GPS — Teacher Console</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#002045', 'primary-container': '#1a365d', 'on-primary-container': '#86a0cd',
+            'primary-fixed': '#d6e3ff', 'primary-fixed-dim': '#adc7f7',
+            secondary: '#0a6c44', 'secondary-container': '#9ff5c1', 'on-secondary-container': '#167249',
+            tertiary: '#3e1200', 'tertiary-container': '#612100', 'on-tertiary-container': '#f47d45',
+            'tertiary-fixed': '#ffdbcd', 'tertiary-fixed-dim': '#ffb596', 'on-tertiary-fixed-variant': '#7d2d00',
+            error: '#ba1a1a', 'error-container': '#ffdad6', 'on-error-container': '#93000a',
+            surface: '#f8f9ff', 'surface-dim': '#ccdbf4', 'surface-bright': '#f8f9ff',
+            'surface-variant': '#d4e4fc', 'surface-container': '#e5eeff', 'surface-container-low': '#eff4ff',
+            'surface-container-lowest': '#ffffff', 'surface-container-high': '#dce9ff', 'surface-container-highest': '#d4e4fc',
+            'surface-tint': '#455f88', 'inverse-surface': '#223144', 'inverse-on-surface': '#eaf1ff', 'inverse-primary': '#adc7f7',
+            background: '#f8f9ff', 'on-background': '#0d1c2e', 'on-surface': '#0d1c2e', 'on-surface-variant': '#43474e',
+            outline: '#74777f', 'outline-variant': '#c4c6cf',
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .sidebar-scroll::-webkit-scrollbar { width: 6px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 3px; }
+    .shadow-soft { box-shadow: 0 4px 12px rgba(26,54,93,0.05); }
+    .student-row { transition: background-color 0.15s ease, transform 0.15s ease; }
+    .student-row:hover { background-color: #f8f9ff; transform: translateY(-1px); }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+  </style>
+</head>
+
+<body class="bg-background text-on-background min-h-screen antialiased">
+
+  <!-- Top App Bar -->
+  <header class="fixed top-0 inset-x-0 z-50 h-16 bg-surface-container-low dark:bg-surface-container shadow-sm flex items-center justify-between px-6 md:pl-[304px]">
+    <div class="flex flex-col">
+      <h1 class="text-lg font-bold text-primary leading-tight">Teacher Console</h1>
+      <p class="text-xs text-on-surface-variant leading-none mt-0.5" id="current-date"></p>
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-primary-container transition-colors active:scale-95">
+        <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+      </button>
+      <div class="relative hidden sm:block">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+        <input id="student-search" type="text" placeholder="Filter by student name..." class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none w-64"/>
+      </div>
+      <div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold">
+        {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="hidden md:flex fixed left-0 top-0 bottom-0 w-72 flex-col bg-surface-container-low border-r border-outline-variant shadow-md sidebar-scroll overflow-y-auto z-40">
+    <div class="px-6 pt-6 pb-4">
+      <h2 class="text-lg font-semibold text-primary">Teacher Console</h2>
+    </div>
+    <nav class="flex-1 px-3 space-y-1">
+      <a href="{% url 'teacher_dashboard' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-secondary-container text-on-secondary-container font-semibold shadow-sm" aria-current="page">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span>
+        <span class="text-sm font-medium">Dashboard</span>
+      </a>
+      <a href="{% url 'flagged_entries' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:translate-x-0.5 transition-all">
+        <span class="material-symbols-outlined">report_problem</span>
+        <span class="text-sm font-medium">Flagged</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:translate-x-0.5 transition-all">
+        <span class="material-symbols-outlined">group</span>
+        <span class="text-sm font-medium">Students</span>
+      </a>
+      <a href="{% url 'school_settings' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:translate-x-0.5 transition-all">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="text-sm font-medium">Settings</span>
+      </a>
+    </nav>
+    <div class="px-6 pt-6 pb-6 border-t border-outline-variant mt-auto">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white font-bold text-sm">
+          {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-on-background">{{ request.user.get_full_name|default:request.user.username }}</p>
+          <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Staff</p>
+        </div>
+      </div>
+      <a href="{% url 'logout' %}" class="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-on-surface-variant hover:text-error transition-colors">
+        <span class="material-symbols-outlined text-sm">logout</span> Log out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="pt-20 pb-20 md:pb-8 md:ml-72 px-4 sm:px-6 lg:px-8 min-h-screen">
+    <div class="max-w-6xl mx-auto space-y-6">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Present -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-soft border border-outline-variant/30 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings:'FILL' 1">how_to_reg</span>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Present</p>
+            <h3 class="text-3xl font-bold text-on-background">{{ present_count }}</h3>
+          </div>
+        </div>
+        <!-- Expected -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-soft border border-outline-variant/30 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-tertiary-container/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-tertiary-container text-2xl" style="font-variation-settings:'FILL' 1">pending_actions</span>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Expected</p>
+            <h3 class="text-3xl font-bold text-on-background">{{ expected_count }}</h3>
+          </div>
+        </div>
+        <!-- Attendance % -->
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-soft border border-outline-variant/30 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings:'FILL' 1">query_stats</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex justify-between items-end mb-1.5">
+              <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Attendance</p>
+              <span class="text-sm font-bold text-secondary">{{ attendance_pct }}%</span>
+            </div>
+            <div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+              <div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: {{ attendance_pct }}%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-ins Table -->
+      <section class="bg-surface-container-lowest rounded-2xl shadow-soft border border-outline-variant/30 overflow-hidden flex flex-col">
+        <div class="px-5 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+          <h2 class="text-lg font-bold text-primary">Real-time Check-ins</h2>
+          <div class="flex gap-2">
+            <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant text-xs font-semibold text-on-surface-variant hover:bg-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-sm">filter_list</span> Filter
+            </button>
+            <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant text-xs font-semibold text-on-surface-variant hover:bg-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-sm">download</span> Export
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Header -->
+        <div class="hidden md:grid grid-cols-12 gap-4 px-5 py-3 border-b border-outline-variant bg-surface-container-low/30 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">
+          <div class="col-span-3">Student</div>
+          <div class="col-span-2">Time</div>
+          <div class="col-span-2">Location</div>
+          <div class="col-span-3">Distance from School</div>
+          <div class="col-span-2 text-right">Status</div>
+        </div>
+
+        <!-- Rows -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar max-h-[600px]" id="student-rows">
+          {% for record in records %}
+            <div class="student-row grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-5 py-3 border-b border-outline-variant/50 items-center {% if record.status == 'rejected' %}bg-error-container/10{% elif record.status == 'flagged' %}bg-tertiary-fixed/20{% endif %}">
+              <!-- Student -->
+              <div class="col-span-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white font-bold text-sm shrink-0 uppercase">
+                  {{ record.student.user.username|slice:":2" }}
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold student-name truncate {% if record.status == 'rejected' %}text-error{% elif record.status == 'flagged' %}text-on-tertiary-fixed-variant{% else %}text-on-background{% endif %}">
+                    {{ record.student.user.get_full_name|default:record.student.user.username }}
+                  </p>
+                  <p class="text-xs text-on-surface-variant">@{{ record.student.user.username }}</p>
+                </div>
+              </div>
+              <!-- Time -->
+              <div class="col-span-2 flex md:block items-center gap-2">
+                <span class="md:hidden text-xs font-bold text-on-surface-variant uppercase">Time:</span>
+                <p class="text-sm text-on-surface">{{ record.timestamp|time:"h:i A" }}</p>
+              </div>
+              <!-- Location -->
+              <div class="col-span-2 flex items-center gap-2 min-w-0">
+                <span class="md:hidden text-xs font-bold text-on-surface-variant uppercase">Location:</span>
+                <span class="material-symbols-outlined text-on-surface-variant text-sm shrink-0">school</span>
+                <p class="text-sm text-on-surface font-medium truncate" title="{{ record.school.name }}">{{ record.school.name|default:"--" }}</p>
+              </div>
+              <!-- Distance -->
+              <div class="col-span-3 flex items-center gap-2">
+                <span class="md:hidden text-xs font-bold text-on-surface-variant uppercase">Distance:</span>
+                {% if record.status == 'present' %}
+                  <span class="material-symbols-outlined text-secondary text-base shrink-0">location_on</span>
+                  <p class="text-sm text-on-surface">Inside Zone <span class="text-xs text-on-surface-variant">({{ record.distance_meters|floatformat:0 }}m)</span></p>
+                {% elif record.status == 'flagged' %}
+                  <span class="material-symbols-outlined text-on-tertiary-container text-base shrink-0">warning</span>
+                  <p class="text-sm text-on-tertiary-fixed-variant">Out of Area <span class="text-xs">({{ record.distance_meters|floatformat:0 }}m)</span></p>
+                {% else %}
+                  <span class="material-symbols-outlined text-error text-base shrink-0">error_outline</span>
+                  <p class="text-sm text-error">Out of Area <span class="text-xs">({{ record.distance_meters|floatformat:0 }}m)</span></p>
+                {% endif %}
+              </div>
+              <!-- Status -->
+              <div class="col-span-2 text-right">
+                {% if record.status == 'present' %}
+                  <span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold uppercase tracking-wider">Present</span>
+                {% elif record.status == 'flagged' %}
+                  <span class="inline-flex px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold uppercase tracking-wider">Flagged</span>
+                {% else %}
+                  <span class="inline-flex px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-wider">Rejected</span>
+                {% endif %}
+              </div>
+            </div>
+          {% empty %}
+            <div class="p-12 text-center text-on-surface-variant">
+              <span class="material-symbols-outlined text-4xl mb-2 text-outline">inbox</span>
+              <p class="text-sm font-medium">No check-ins yet today.</p>
+            </div>
+          {% endfor %}
+
+          {% for student in not_checked_in %}
+            <div class="student-row grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-5 py-3 border-b border-outline-variant/50 items-center bg-error-container/10">
+              <!-- Student -->
+              <div class="col-span-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg border border-error flex items-center justify-center text-error font-bold text-sm shrink-0 uppercase">
+                  {{ student.user.username|slice:":2" }}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1">
+                    <p class="text-sm font-semibold text-error student-name truncate">{{ student.user.get_full_name|default:student.user.username }}</p>
+                    <span class="material-symbols-outlined text-error text-xs">warning</span>
+                  </div>
+                  <p class="text-xs text-on-surface-variant">@{{ student.user.username }}</p>
+                </div>
+              </div>
+              <!-- Time -->
+              <div class="col-span-2 flex md:block items-center gap-2">
+                <span class="md:hidden text-xs font-bold text-on-surface-variant uppercase">Time:</span>
+                <p class="text-sm text-on-surface">--:--</p>
+              </div>
+              <!-- Location -->
+              <div class="col-span-2 flex items-center gap-2">
+                <span class="md:hidden text-xs font-bold text-on-surface-variant uppercase">Location:</span>
+                <p class="text-sm text-on-surface-variant">--</p>
+              </div>
+              <!-- Distance -->
+              <div class="col-span-3 flex items-center gap-2">
+                <span class="md:hidden text-xs font-bold text-on-surface-variant uppercase">Distance:</span>
+                <span class="material-symbols-outlined text-error text-base shrink-0">error_outline</span>
+                <p class="text-sm text-error">Not checked in</p>
+              </div>
+              <!-- Status -->
+              <div class="col-span-2 text-right">
+                <span class="inline-flex px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-wider">Missing</span>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="p-3 bg-surface-container-low border-t border-outline-variant text-center">
+          <p class="text-xs font-medium text-on-surface-variant">
+            Showing {{ records|length }} checked in of {{ expected_count }} expected students.
+            {% if not_checked_in %}<span class="text-error font-bold">{{ not_checked_in|length }} absent.</span>{% endif %}
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-50 h-16 bg-surface-container-lowest border-t border-outline-variant flex justify-around items-center px-4 pb-safe">
+    <a href="{% url 'teacher_dashboard' %}" class="flex flex-col items-center justify-center text-primary border-t-2 border-primary pt-1 active:scale-90 transition-transform">
+      <span class="material-symbols-outlined">home</span>
+      <span class="text-[10px] font-semibold">Home</span>
+    </a>
+    <a href="{% url 'flagged_entries' %}" class="flex flex-col items-center justify-center text-on-surface-variant pt-1 active:scale-90 transition-transform">
+      <span class="material-symbols-outlined">report_problem</span>
+      <span class="text-[10px] font-semibold">Flagged</span>
+    </a>
+    <a href="{% url 'school_settings' %}" class="flex flex-col items-center justify-center text-on-surface-variant pt-1 active:scale-90 transition-transform">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="text-[10px] font-semibold">Settings</span>
+    </a>
+  </nav>
+
+  <script>
+    // Date header
+    const dateEl = document.getElementById('current-date');
+    dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+    // Live search
+    const searchInput = document.getElementById('student-search');
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('#student-rows .student-row').forEach((row) => {
+        const nameEl = row.querySelector('.student-name');
+        row.style.display = nameEl && nameEl.textContent.toLowerCase().includes(query) ? 'grid' : 'none';
+      });
+    });
+
+    // Auto-refresh (skip if any input or button is active)
+    const REFRESH_INTERVAL_MS = 30000; // 30s — less aggressive than 15s
+    setInterval(() => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'BUTTON' || active.tagName === 'A')) return;
+      window.location.reload();
+    }, REFRESH_INTERVAL_MS);
+
+    // Dark mode
+    (function () {
+      const html = document.documentElement;
+      const btn = document.getElementById('theme-toggle');
+      const icon = document.getElementById('theme-icon');
+      const STORAGE_KEY = 'edu-gps-theme';
+      function applyTheme(theme) {
+        if (theme === 'dark') { html.classList.add('dark'); icon.textContent = 'light_mode'; }
+        else { html.classList.remove('dark'); icon.textContent = 'dark_mode'; }
+      }
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+      btn.addEventListener('click', () => {
+        const next = html.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme(next); localStorage.setItem(STORAGE_KEY, next);
+      });
+    })();
+  </script>
+</body>
+</html>

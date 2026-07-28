@@ -1,0 +1,405 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>EduGuard GPS - My Student Dashboard</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-bright": "#f8f9ff",
+            "on-background": "#0d1c2e",
+            "on-primary-fixed": "#001b3c",
+            "tertiary-fixed": "#ffdbcd",
+            "secondary-fixed": "#9ff5c1",
+            "primary-container": "#1a365d",
+            "primary-fixed-dim": "#adc7f7",
+            "on-surface-variant": "#43474e",
+            "secondary-fixed-dim": "#83d8a6",
+            "on-error": "#ffffff",
+            "primary": "#002045",
+            "outline-variant": "#c4c6cf",
+            "on-primary-container": "#86a0cd",
+            "on-tertiary-fixed-variant": "#7d2d00",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#f47d45",
+            "surface-variant": "#d4e4fc",
+            "surface-container-highest": "#d4e4fc",
+            "on-secondary-fixed": "#002111",
+            "on-error-container": "#93000a",
+            "error": "#ba1a1a",
+            "tertiary": "#3e1200",
+            "on-primary": "#ffffff",
+            "error-container": "#ffdad6",
+            "primary-fixed": "#d6e3ff",
+            "secondary": "#0a6c44",
+            "on-secondary-container": "#167249",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#612100",
+            "tertiary-fixed-dim": "#ffb596",
+            "surface-container-low": "#eff4ff",
+            "surface-tint": "#455f88",
+            "surface-container-high": "#dce9ff",
+            "on-tertiary-fixed": "#360f00",
+            "on-secondary-fixed-variant": "#005231",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#adc7f7",
+            "surface": "#f8f9ff",
+            "outline": "#74777f",
+            "surface-dim": "#ccdbf4",
+            "on-surface": "#0d1c2e",
+            "on-primary-fixed-variant": "#2d476f",
+            "inverse-on-surface": "#eaf1ff",
+            "secondary-container": "#9ff5c1",
+            "surface-container": "#e5eeff",
+            "background": "#f8f9ff",
+            "inverse-surface": "#223144"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          spacing: {
+            "xxl": "48px",
+            "md": "16px",
+            "base": "4px",
+            "sm": "8px",
+            "container-margin": "24px",
+            "gutter": "16px",
+            "xl": "32px",
+            "lg": "24px",
+            "xs": "4px"
+          },
+          fontFamily: {
+            "display-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          fontSize: {
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden">
+
+  <!-- Navigation Drawer (Desktop Only) -->
+  <aside class="hidden md:flex fixed left-0 top-0 h-full w-[280px] z-40 bg-surface-container-low border-r border-outline-variant flex-col py-lg space-y-base shadow-md">
+    <div class="px-lg pb-xl flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary text-3xl">school</span>
+      <h1 class="font-headline-md text-primary">EduGuard GPS</h1>
+    </div>
+    <nav class="flex-1 flex flex-col space-y-1 px-sm">
+      <a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container font-semibold rounded-lg mx-2 transition-all duration-200 ease-in-out" href="{% url 'checkin' %}">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+        <span class="font-body-md text-body-md">My Portal</span>
+      </a>
+      <a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-all duration-200 ease-in-out" href="{% url 'history' %}">
+        <span class="material-symbols-outlined">history</span>
+        <span class="font-body-md text-body-md">Attendance Logs</span>
+      </a>
+      <a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 transition-all duration-200 ease-in-out" href="#">
+        <span class="material-symbols-outlined">pin_drop</span>
+        <span class="font-body-md text-body-md">Geofence Status</span>
+      </a>
+    </nav>
+    <div class="px-lg pt-md border-t border-outline-variant">
+      {% if user.is_authenticated %}
+        <a class="flex items-center gap-md p-md text-error hover:bg-error-container/20 rounded-lg transition-colors" href="{% url 'logout' %}">
+          <span class="material-symbols-outlined">logout</span>
+          <span class="font-body-md text-body-md font-semibold">Sign Out</span>
+        </a>
+      {% endif %}
+    </div>
+  </aside>
+
+  <!-- Top App Bar -->
+  <header class="fixed top-0 w-full z-50 bg-surface-container-low h-16 flex justify-between items-center px-container-margin shadow-sm md:pl-[304px]">
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary md:hidden">school</span>
+      <span class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary font-bold">Student Portal</span>
+    </div>
+    <div class="flex items-center gap-md">
+      <button class="p-base hover:bg-surface-variant transition-colors rounded-full active:scale-95 duration-150">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      
+      <!-- Student Profile Avatar Link -->
+      <a href="{% if user.student %}{% url 'student_detail' user.student.id %}{% else %}#{% endif %}" class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold overflow-hidden border-2 border-primary-container block transition-transform active:scale-95">
+        {% if user.student and user.student.profile_picture %}
+          <img class="w-full h-full object-cover" src="{{ user.student.profile_picture.url }}" alt="{{ user.username }}'s profile picture"/>
+        {% else %}
+          <span>{{ user.username|slice:":2"|upper }}</span>
+        {% endif %}
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pt-24 pb-24 md:pb-lg px-container-margin md:pl-[304px] max-w-7xl mx-auto space-y-lg">
+    
+    <!-- Welcome Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="font-headline-lg-mobile md:font-headline-lg text-on-background">
+          Welcome, {{ user.first_name|default:user.username }} 👋
+        </h2>
+        <p class="text-body-sm text-on-surface-variant">Here is your live attendance activity and geofence tracking record.</p>
+      </div>
+    </div>
+
+    <!-- Bento Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+      
+      <!-- Student Card (Primary Bento) -->
+      <section class="md:col-span-8 bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant flex flex-col md:flex-row items-center md:items-start gap-lg relative overflow-hidden">
+        <div class="w-28 h-28 rounded-xl overflow-hidden shadow-md flex-shrink-0 border-2 border-primary-container bg-surface-container-high flex items-center justify-center">
+          {% if student.profile_picture %}
+            <img class="w-full h-full object-cover" src="{{ student.profile_picture.url }}" alt="{{ student.user.get_full_name }}"/>
+          {% else %}
+            <span class="text-3xl font-bold text-primary">{{ student.user.first_name|slice:":1" }}{{ student.user.last_name|slice:":1" }}</span>
+          {% endif %}
+        </div>
+        
+        <div class="flex-1 text-center md:text-left">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-md">
+            <div>
+              <h3 class="font-headline-md text-on-background">{{ student.user.get_full_name|default:student.user.username }}</h3>
+              <div class="flex items-center justify-center md:justify-start gap-sm text-body-sm text-on-surface-variant mt-xs">
+                <span class="bg-surface-variant px-sm py-xs rounded-full font-label-md">ID: {{ student.student_id|default:student.id }}</span>
+                <span class="bg-surface-variant px-sm py-xs rounded-full font-label-md">Grade {{ student.grade|default:"N/A" }}</span>
+              </div>
+            </div>
+            
+            <a href="{% url 'checkin' %}" class="bg-primary text-on-primary px-lg py-md rounded-xl font-body-md font-bold hover:opacity-90 active:scale-95 transition-all shadow-md flex items-center justify-center gap-sm">
+              <span class="material-symbols-outlined">my_location</span>
+              Check In Now
+            </a>
+          </div>
+
+          <div class="bg-surface-container-low p-md rounded-lg border border-outline-variant">
+            <p class="text-body-sm text-on-surface-variant leading-relaxed">
+              <span class="font-bold text-primary">Last Recorded Activity:</span> 
+              {% if latest_record %}
+                Checked in on {{ latest_record.timestamp|date:"N j, Y, g:i A" }} at {{ latest_record.school.name|default:"School Geofence Zone" }}.
+              {% else %}
+                No recent check-ins recorded.
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary opacity-[0.03] rounded-full pointer-events-none"></div>
+      </section>
+
+      <!-- Personal Performance Stats (Secondary Bento) -->
+      <section class="md:col-span-4 bg-primary text-on-primary p-lg rounded-xl shadow-lg flex flex-col justify-between">
+        <div>
+          <h3 class="font-label-md uppercase tracking-widest opacity-80 mb-lg">Your Attendance Overview</h3>
+          <div class="space-y-lg">
+            <div class="flex items-end justify-between">
+              <div class="space-y-1">
+                <p class="text-body-sm opacity-70">30-Day Attendance</p>
+                <p class="text-display-lg leading-none">{{ attendance_percentage|default:"0" }}%</p>
+              </div>
+              <span class="material-symbols-outlined text-secondary-fixed-dim text-[48px]">verified</span>
+            </div>
+            <div class="grid grid-cols-2 gap-md pt-md border-t border-white/10">
+              <div>
+                <p class="text-body-sm opacity-70">Absences</p>
+                <p class="font-headline-md">{{ total_absences|default:"0" }} Days</p>
+              </div>
+              <div>
+                <p class="text-body-sm opacity-70">Late Entries</p>
+                <p class="font-headline-md">{{ total_late|default:"0" }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Heatmap View (Large Bento) -->
+      <section class="md:col-span-12 bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant">
+        <div class="flex items-center justify-between mb-xl">
+          <div>
+            <h3 class="font-headline-md text-on-background">Attendance Activity Calendar</h3>
+            <p class="text-body-sm text-on-surface-variant">Your check-in status over the last 30 days</p>
+          </div>
+          <div class="flex items-center gap-md">
+            <div class="flex items-center gap-base">
+              <div class="w-3 h-3 rounded-sm bg-secondary"></div>
+              <span class="text-label-md">Present</span>
+            </div>
+            <div class="flex items-center gap-base">
+              <div class="w-3 h-3 rounded-sm bg-on-tertiary-container"></div>
+              <span class="text-label-md">Late</span>
+            </div>
+            <div class="flex items-center gap-base">
+              <div class="w-3 h-3 rounded-sm bg-error"></div>
+              <span class="text-label-md">Absent</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="heatmap-grid overflow-x-auto pb-md">
+          <!-- Day headers -->
+          <div class="text-center font-label-md text-on-surface-variant">Mon</div>
+          <div class="text-center font-label-md text-on-surface-variant">Tue</div>
+          <div class="text-center font-label-md text-on-surface-variant">Wed</div>
+          <div class="text-center font-label-md text-on-surface-variant">Thu</div>
+          <div class="text-center font-label-md text-on-surface-variant">Fri</div>
+          <div class="text-center font-label-md text-on-surface-variant">Sat</div>
+          <div class="text-center font-label-md text-on-surface-variant">Sun</div>
+
+          <!-- Dynamic Heatmap Block Rendering -->
+          {% for day in heatmap_days %}
+            {% if day.is_padding %}
+              <div class="aspect-square rounded-md bg-surface-container-high opacity-20"></div>
+            {% else %}
+              <div class="aspect-square rounded-md flex items-center justify-center text-white text-[10px] hover:scale-110 transition-transform cursor-pointer
+                {% if day.status == 'present' %}bg-secondary
+                {% elif day.status == 'late' %}bg-on-tertiary-container
+                {% elif day.status == 'absent' %}bg-error
+                {% else %}bg-surface-container-high opacity-40 text-on-surface-variant{% endif %}"
+                title="{{ day.date|date:'M d, Y' }}: {{ day.status|capfirst|default:'No Data' }}">
+                {{ day.date|date:"j" }}
+              </div>
+            {% endif %}
+          {% empty %}
+            {% for i in "123456789012345678901234567890"|make_list %}
+              <div class="aspect-square rounded-md bg-surface-container-high opacity-20 flex items-center justify-center text-[10px] text-on-surface-variant">{{ forloop.counter }}</div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Personal History Table -->
+      <section class="md:col-span-12 bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(26,54,93,0.05)] border border-outline-variant overflow-hidden">
+        <div class="p-lg border-b border-outline-variant flex justify-between items-center">
+          <h3 class="font-headline-md text-on-background">Your Recent Logs</h3>
+          <a href="{% url 'history' %}" class="px-md py-sm bg-surface-container-high text-on-surface-variant rounded-lg text-body-sm font-semibold hover:bg-surface-variant transition-colors">View All</a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-surface-container-low text-on-surface-variant border-b border-outline-variant">
+                <th class="px-lg py-md font-label-md uppercase">Date</th>
+                <th class="px-lg py-md font-label-md uppercase">Status</th>
+                <th class="px-lg py-md font-label-md uppercase">Time In</th>
+                <th class="px-lg py-md font-label-md uppercase">Geofence Location</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant">
+              {% for record in attendance_records %}
+                <tr class="hover:bg-surface-container-low transition-colors group">
+                  <td class="px-lg py-md font-body-md font-semibold">{{ record.timestamp|date:"F j, Y" }}</td>
+                  <td class="px-lg py-md">
+                    {% if record.status == 'present' %}
+                      <span class="inline-flex items-center gap-xs px-sm py-xs bg-secondary/10 text-secondary rounded-full text-label-md font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> PRESENT
+                      </span>
+                    {% elif record.status == 'late' %}
+                      <span class="inline-flex items-center gap-xs px-sm py-xs bg-on-tertiary-container/10 text-on-tertiary-container rounded-full text-label-md font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span> LATE
+                      </span>
+                    {% else %}
+                      <span class="inline-flex items-center gap-xs px-sm py-xs bg-error/10 text-error rounded-full text-label-md font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-error"></span> ABSENT
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="px-lg py-md text-on-surface-variant">
+                    {% if record.status != 'absent' %}{{ record.timestamp|date:"g:i A" }}{% else %}--:--{% endif %}
+                  </td>
+                  <td class="px-lg py-md text-on-surface-variant">
+                    {{ record.school.name|default:"Campus Geofence" }}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="px-lg py-md text-center text-on-surface-variant">
+                    No recent check-in history found.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Bottom Nav (Mobile) -->
+  <footer class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container-lowest rounded-t-xl shadow-[0px_-4px_12px_rgba(26,54,93,0.05)] border-t border-outline-variant h-16 flex justify-around items-center px-md pb-safe">
+    <a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 active:scale-90 duration-200" href="{% url 'checkin' %}">
+      <span class="material-symbols-outlined">home</span>
+      <span class="font-label-md text-label-md">Home</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 active:scale-90 duration-200" href="{% url 'history' %}">
+      <span class="material-symbols-outlined">history</span>
+      <span class="font-label-md text-label-md">History</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-primary border-t-2 border-primary pt-2 active:scale-90 duration-200" href="{% if user.student %}{% url 'student_detail' user.student.id %}{% else %}#{% endif %}">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+      <span class="font-label-md text-label-md">Profile</span>
+    </a>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.aspect-square').forEach(cell => {
+      cell.addEventListener('mouseenter', function() {
+        this.style.boxShadow = '0 0 10px rgba(0, 32, 69, 0.2)';
+      });
+      cell.addEventListener('mouseleave', function() {
+        this.style.boxShadow = 'none';
+      });
+    });
+  </script>
+</body>
+</html>

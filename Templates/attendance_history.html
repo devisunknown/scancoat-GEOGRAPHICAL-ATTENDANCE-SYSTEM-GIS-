@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Student Attendance History - EduGuard GPS</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-bright": "#f8f9ff",
+            "on-background": "#0d1c2e",
+            "on-primary-fixed": "#001b3c",
+            "tertiary-fixed": "#ffdbcd",
+            "secondary-fixed": "#9ff5c1",
+            "primary-container": "#1a365d",
+            "primary-fixed-dim": "#adc7f7",
+            "on-surface-variant": "#43474e",
+            "secondary-fixed-dim": "#83d8a6",
+            "on-error": "#ffffff",
+            "primary": "#002045",
+            "outline-variant": "#c4c6cf",
+            "on-primary-container": "#86a0cd",
+            "on-tertiary-fixed-variant": "#7d2d00",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#f47d45",
+            "surface-variant": "#d4e4fc",
+            "surface-container-highest": "#d4e4fc",
+            "on-secondary-fixed": "#002111",
+            "on-error-container": "#93000a",
+            "error": "#ba1a1a",
+            "tertiary": "#3e1200",
+            "on-primary": "#ffffff",
+            "error-container": "#ffdad6",
+            "primary-fixed": "#d6e3ff",
+            "secondary": "#0a6c44",
+            "on-secondary-container": "#167249",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#612100",
+            "tertiary-fixed-dim": "#ffb596",
+            "surface-container-low": "#eff4ff",
+            "surface-tint": "#455f88",
+            "surface-container-high": "#dce9ff",
+            "on-tertiary-fixed": "#360f00",
+            "on-secondary-fixed-variant": "#005231",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#adc7f7",
+            "surface": "#f8f9ff",
+            "outline": "#74777f",
+            "surface-dim": "#ccdbf4",
+            "on-surface": "#0d1c2e",
+            "on-primary-fixed-variant": "#2d476f",
+            "inverse-on-surface": "#eaf1ff",
+            "secondary-container": "#9ff5c1",
+            "surface-container": "#e5eeff",
+            "background": "#f8f9ff",
+            "inverse-surface": "#223144"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "16px",
+            "xl": "24px",
+            "full": "9999px"
+          },
+          spacing: {
+            "xxl": "48px",
+            "md": "16px",
+            "base": "4px",
+            "sm": "8px",
+            "container-margin": "24px",
+            "gutter": "16px",
+            "xl": "32px",
+            "lg": "24px",
+            "xs": "4px"
+          },
+          fontFamily: {
+            "display-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          fontSize: {
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f8f9ff;
+      color: #0d1c2e;
+      -webkit-tap-highlight-color: transparent;
+      min-height: max(884px, 100dvh);
+    }
+    .custom-shadow {
+      box-shadow: 0px 4px 12px rgba(26, 54, 93, 0.05);
+    }
+    .status-pill {
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="font-body-md text-on-background">
+
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim shadow-sm flex justify-between items-center px-container-margin h-16">
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">school</span>
+      <h1 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary dark:text-primary-fixed-dim">EduGuard GPS</h1>
+    </div>
+    
+    <!-- User Profile Avatar Link -->
+    <a href="{% url 'student_detail' user.student.id %}" class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border-2 border-primary-container block">
+      {% if user.student and user.student.profile_picture %}
+        <img class="w-full h-full object-cover" src="{{ user.student.profile_picture.url }}" alt="{{ user.username }}'s profile picture" />
+      {% else %}
+        <div class="w-full h-full flex items-center justify-center bg-primary text-white font-bold text-sm">
+          {{ user.username|slice:":2"|upper }}
+        </div>
+      {% endif %}
+    </a>
+  </header>
+
+  <main class="pt-20 pb-24 px-container-margin max-w-lg mx-auto">
+
+    <!-- Summary Dashboard -->
+    <section class="grid grid-cols-2 gap-md mb-xl">
+      <div class="col-span-1 bg-surface-container-lowest p-lg rounded-xl custom-shadow flex flex-col justify-between border border-outline-variant/30">
+        <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Attendance</span>
+        <div>
+          <span class="font-headline-lg text-headline-lg-mobile text-primary block">{{ attendance_percentage|default:"0" }}%</span>
+          <p class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">trending_up</span>
+            Rate
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-1 bg-primary text-on-primary p-lg rounded-xl custom-shadow flex flex-col justify-between">
+        <span class="font-label-md text-label-md text-on-primary-container/80 uppercase tracking-wider">Current Streak</span>
+        <div>
+          <span class="font-headline-lg text-headline-lg-mobile text-white block">{{ current_streak|default:"0" }} Days</span>
+          <p class="font-body-sm text-body-sm text-on-primary-container">Personal Record!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters (URL Query Parameters) -->
+    <section class="mb-lg">
+      <div class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/20">
+        <a href="?filter=week" class="flex-1 text-center py-sm rounded-md font-label-md text-label-md transition-all duration-200 {% if active_filter == 'week' or not active_filter %}bg-white text-primary shadow-sm{% else %}text-on-surface-variant hover:bg-surface-container-high{% endif %}">
+          This Week
+        </a>
+        <a href="?filter=month" class="flex-1 text-center py-sm rounded-md font-label-md text-label-md transition-all duration-200 {% if active_filter == 'month' %}bg-white text-primary shadow-sm{% else %}text-on-surface-variant hover:bg-surface-container-high{% endif %}">
+          This Month
+        </a>
+        <a href="?filter=all" class="flex-1 text-center py-sm rounded-md font-label-md text-label-md transition-all duration-200 {% if active_filter == 'all' %}bg-white text-primary shadow-sm{% else %}text-on-surface-variant hover:bg-surface-container-high{% endif %}">
+          All Time
+        </a>
+      </div>
+    </section>
+
+    <!-- History Dynamic List -->
+    <section class="space-y-xl">
+      {% for group in attendance_groups %}
+        <div>
+          <h3 class="font-label-md text-label-md text-on-surface-variant mb-md uppercase tracking-widest px-1">
+            {{ group.date_label }} — {{ group.date|date:"M d" }}
+          </h3>
+
+          <div class="space-y-md">
+            {% for record in group.records %}
+              <div class="bg-surface-container-lowest p-md rounded-xl custom-shadow border border-outline-variant/10 flex items-center justify-between hover:scale-[1.01] transition-transform duration-150">
+                <div class="flex items-center gap-md">
+                  
+                  <!-- Dynamic Icon & Background Color based on Status -->
+                  {% if record.status == 'present' %}
+                    <div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                      <span class="material-symbols-outlined">how_to_reg</span>
+                    </div>
+                  {% elif record.status == 'late' %}
+                    <div class="w-12 h-12 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed-variant">
+                      <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                  {% else %}
+                    <div class="w-12 h-12 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+                      <span class="material-symbols-outlined">location_off</span>
+                    </div>
+                  {% endif %}
+
+                  <div>
+                    <h4 class="font-body-md text-on-background font-semibold">{{ record.school.name|default:"Check-in Entry" }}</h4>
+                    <p class="font-body-sm text-on-surface-variant">{{ record.timestamp|date:"h:i A" }}</p>
+                  </div>
+                </div>
+
+                <!-- Dynamic Status Pills -->
+                <div class="text-right">
+                  {% if record.status == 'present' %}
+                    <span class="status-pill bg-secondary-container text-on-secondary-container inline-block mb-1">Present</span>
+                  {% elif record.status == 'late' %}
+                    <span class="status-pill bg-tertiary-fixed text-on-tertiary-fixed-variant inline-block mb-1">Late</span>
+                  {% else %}
+                    <span class="status-pill bg-error-container text-on-error-container inline-block mb-1">Rejected</span>
+                  {% endif %}
+                  {% if record.distance_meters %}
+                    <p class="font-label-md text-label-md text-outline">{{ record.distance_meters|floatformat:1 }}m away</p>
+                  {% endif %}
+                </div>
+
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="text-center py-12">
+          <p class="text-on-surface-variant font-body-md">No attendance records found.</p>
+        </div>
+      {% endfor %}
+    </section>
+
+    <!-- Stats Graphic Decor -->
+    <section class="mt-xxl bg-surface-container-high/30 rounded-2xl p-xl overflow-hidden relative border border-outline-variant/20">
+      <div class="relative z-10">
+        <h4 class="font-headline-md text-primary mb-sm">Consistency is Key</h4>
+        <p class="font-body-sm text-on-surface-variant max-w-[200px]">Keep checking in on time to maintain your streak!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant dark:border-outline shadow-[0px_-4px_12px_rgba(26,54,93,0.05)] flex justify-around items-center h-16 pb-safe px-md">
+    
+    <!-- Home (Points to 'checkin') -->
+    <a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200 {% if request.resolver_match.url_name == 'checkin' %}text-primary border-t-2 border-primary{% endif %}" 
+       href="{% url 'checkin' %}">
+      <span class="material-symbols-outlined" {% if request.resolver_match.url_name == 'checkin' %}style="font-variation-settings: 'FILL' 1;"{% endif %}>home</span>
+      <span class="font-label-md text-label-md">Home</span>
+    </a>
+
+    <!-- History (Active Page) -->
+    <a class="flex flex-col items-center justify-center pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200 {% if request.resolver_match.url_name == 'history' %}text-primary border-t-2 border-primary{% endif %}" 
+       href="{% url 'history' %}">
+      <span class="material-symbols-outlined" {% if request.resolver_match.url_name == 'history' %}style="font-variation-settings: 'FILL' 1;"{% endif %}>history</span>
+      <span class="font-label-md text-label-md">History</span>
+    </a>
+
+    <!-- Logout -->
+    <a class="flex flex-col items-center justify-center text-on-surface-variant pt-2 hover:bg-surface-container-high transition-all active:scale-90 duration-200" 
+       href="{% url 'logout' %}">
+      <span class="material-symbols-outlined">logout</span>
+      <span class="font-label-md text-label-md">Logout</span>
+    </a>
+
+  </nav>
+
+  <script>
+    // Smooth Reveal Animation for List Items
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.custom-shadow').forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(10px)";
+      el.style.transition = "all 0.4s ease-out";
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

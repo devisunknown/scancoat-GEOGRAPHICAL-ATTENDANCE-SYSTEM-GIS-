@@ -2,12 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('login/', views.login, name='login'),
-    path('', views.checkin, name='checkin'),
-    path('teacher-dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
-    path('api/checkin/', views.CheckInView.as_view(), name='api-checkin'),  
-    path('logout/',views.logout_view,name='logout'),
-    path('settings/', views.school_settings, name='school_settings'),
-    path('settings/<int:school_id>/', views.school_settings, name='school_settings'),
+    path('', views.login, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('api/check-in/', views.CheckInView.as_view(), name='api_checkin'),
+    path('/checkin', views.checkin, name='checkin'),
+    path('history/', views.attendance_history, name='history'),
     path('checkin/result/<int:record_id>/', views.checkin_result, name='checkin_result'),
+    path('teacher/', views.teacher_dashboard, name='teacher_dashboard'),
+    path('student/student_detail/<int:student_id>/', views.student_detail, name='student_detail'),
+    path('teacher/settings/', views.school_settings, name='school_settings'),
+    path('teacher/settings/<int:school_id>/', views.school_settings, name='school_settings_detail'),
+    path('teacher/flagged/', views.flagged_entries_view, name='flagged_entries'),
+    path('teacher/flagged/<int:entry_id>/approve/', views.approve_all_entries, name='approve_all_entries'),
+    path('teacher/flagged/approve-all/', views.approve_all_entries_view, name='approve_all_entries_view'),
 ]
