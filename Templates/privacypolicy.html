@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduGuard GPS - Legal &amp; Privacy</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#612100",
+                        "primary": "#002045",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed": "#002111",
+                        "on-surface-variant": "#43474e",
+                        "primary-fixed": "#d6e3ff",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c4c6cf",
+                        "outline": "#74777f",
+                        "on-tertiary-container": "#f47d45",
+                        "on-background": "#0d1c2e",
+                        "surface-variant": "#d4e4fc",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "secondary": "#0a6c44",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#9ff5c1",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#167249",
+                        "tertiary": "#3e1200",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed": "#001b3c",
+                        "surface-dim": "#ccdbf4",
+                        "primary-container": "#1a365d",
+                        "surface": "#f8f9ff",
+                        "primary-fixed-dim": "#adc7f7",
+                        "inverse-surface": "#223144",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "surface-container-highest": "#d4e4fc",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-secondary-fixed-variant": "#005231",
+                        "on-primary-container": "#86a0cd",
+                        "secondary-fixed-dim": "#83d8a6",
+                        "secondary-container": "#9ff5c1",
+                        "on-surface": "#0d1c2e",
+                        "surface-container": "#e5eeff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#455f88",
+                        "inverse-primary": "#adc7f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "container-margin": "24px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8f9ff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4e4fc;
+            border-radius: 10px;
+        }
+        .tab-transition {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+        }
+        .content-fade {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- TopAppBar Component (Mandatory Shell Filter: Task-focused sub-page) -->
+<!-- Note: Even though it has a "Back" intent, the prompt explicitly asked to ensure TopAppBar is used. -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-low dark:bg-surface-container shadow-sm h-16 flex justify-between items-center px-container-margin">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="school">school</span>
+<h1 class="font-headline-md text-headline-md-mobile text-primary">EduGuard GPS</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A clean professional studio portrait of a university administrative officer, wearing a navy blue blazer, smiling warmly against a soft gray background. The lighting is bright and high-key, reflecting an institutional trust and security aesthetic with high-end digital clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARhw2JXsNYTeHy3889-DOo748vqM4c6D2twf9zDypQtkr7s-OdcgmAit5-Wsk1bw9LY_zAoxjWCENbiTkOVl6lxwlcWRY35LNEK11HqqN6wZYZdg62bKgdr2AIt81jEWcVK-uy7AxTmWAxHhix5AxzYUSmYmwbceTP8_EP8_PytnxpqGp642Uzesk1wLdRmtygY16D3zFOPUEnDLPicsASEo5DrPXRkktKrZJfbPh6Vdb-rFacLGlr"/>
+</div>
+</header>
+<main class="pt-20 pb-32 max-w-2xl mx-auto px-container-margin">
+<!-- Segmented Control (Tabs) -->
+<section class="mt-lg">
+<div class="bg-surface-container-high rounded-xl p-1 flex relative overflow-hidden h-12 shadow-inner">
+<div class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-surface-container-lowest rounded-lg shadow-sm tab-transition z-0" id="tab-slider"></div>
+<button class="flex-1 z-10 font-label-md text-label-md text-primary transition-colors duration-200 focus:outline-none" onclick="switchTab('privacy')">Privacy Policy</button>
+<button class="flex-1 z-10 font-label-md text-label-md text-on-surface-variant transition-colors duration-200 focus:outline-none" onclick="switchTab('terms')">Terms of Service</button>
+</div>
+</section>
+<!-- Timestamp and Hero Section -->
+<section class="mt-xl mb-xl">
+<div class="flex items-center gap-sm text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="update">update</span>
+<span class="font-label-md text-label-md">Last Updated: October 24, 2023</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-md" id="view-title">Privacy Policy</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed" id="view-intro">
+                Your privacy is our utmost priority. EduGuard GPS is designed with "Privacy by Design" principles to ensure that student location data is protected through rigorous institutional standards.
+            </p>
+</section>
+<!-- Content Canvas -->
+<div class="space-y-xl content-fade" id="content-area">
+<!-- Privacy Content (Initial State) -->
+<div class="block space-y-xl" id="privacy-content">
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="security">security</span>
+                        1. Data Collection
+                    </h3>
+<p class="text-on-surface-variant mb-md">We collect location data solely to verify student attendance and safety. This include GPS coordinates, device identifiers, and timestamped entry/exit logs.</p>
+<div class="bg-surface-container-low border-l-4 border-primary p-md rounded-r-lg">
+<p class="font-label-md text-label-md text-primary uppercase mb-xs">Privacy Guard Notice</p>
+<p class="text-body-sm italic">"Personal identity data is encrypted at rest using AES-256 standards and never sold to third-party advertisers."</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="map">map</span>
+                        2. GPS Usage &amp; Geofencing
+                    </h3>
+<p class="text-on-surface-variant mb-md">Our GPS tracking is **not** constant. It is strictly limited by both location and time parameters to ensure zero surveillance outside of school requirements.</p>
+<ul class="space-y-sm">
+<li class="flex items-start gap-sm text-body-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span>**Defined Boundaries:** Data is only logged when a student enters or exits predefined "Geofences" around school campuses.</span>
+</li>
+<li class="flex items-start gap-sm text-body-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span>**Attendance Windows:** Tracking is only active during scheduled school hours (e.g., 7:00 AM to 4:00 PM).</span>
+</li>
+<li class="flex items-start gap-sm text-body-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span>**Auto-Disable:** Outside of these zones and times, the background location service is dormant.</span>
+</li>
+</ul>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="encrypted">encrypted</span>
+                        3. Data Security
+                    </h3>
+<p class="text-on-surface-variant">We utilize SOC2 Type II compliant servers to host all attendance data. Only authorized school administrators with multi-factor authentication (MFA) can access specific student logs.</p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="person_search">person_search</span>
+                        4. User Rights
+                    </h3>
+<p class="text-on-surface-variant">Parents and legal guardians have the right to request a full export of their student's location history at any time. You may also opt-out of GPS tracking, which will require manual check-ins via school staff.</p>
+</div>
+</div>
+<!-- Terms Content (Hidden initially) -->
+<div class="hidden space-y-xl" id="terms-content">
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="assignment">assignment</span>
+                        1. User Responsibilities
+                    </h3>
+<p class="text-on-surface-variant mb-md">By using EduGuard GPS, you agree to provide accurate identification information and ensure the device used for attendance is properly maintained and charged.</p>
+<p class="text-body-sm font-bold text-error">Prohibited Actions: Users may not spoof GPS coordinates or use VPNs to circumvent the geofencing requirements.</p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+                        2. Institutional Commitment
+                    </h3>
+<p class="text-on-surface-variant">The school commits to using this data exclusively for student safety and educational administrative purposes. We will not share individual student patterns with law enforcement without a specific legal warrant or immediate safety threat.</p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-[0px_4px_12px_rgba(26,54,93,0.05)]">
+<h3 class="font-headline-md text-[20px] text-primary mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="gavel">gavel</span>
+                        3. Limitation of Liability
+                    </h3>
+<p class="text-on-surface-variant">EduGuard is a safety *assistance* tool. While we strive for 100% accuracy, hardware limitations (signal interference, building materials) may affect GPS precision. The school is not liable for data inaccuracies caused by the user's mobile device.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Actions -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container-lowest dark:bg-surface-dim shadow-[0px_-4px_12px_rgba(26,54,93,0.1)] rounded-t-xl p-container-margin border-t border-outline-variant">
+<div class="flex flex-col gap-sm">
+<form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+<button class="w-full bg-primary text-on-primary h-14 rounded-lg font-body-md font-bold shadow-md hover:opacity-90 active:scale-95 transition-all duration-150 flex items-center justify-center gap-sm">
+                Accept &amp; Continue
+                <span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full bg-transparent text-primary h-12 rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors">
+                Back to Login
+            </button>
+        </form>
+</div>
+</nav>
+<script>
+        function switchTab(tab) {
+            const slider = document.getElementById('tab-slider');
+            const privacyContent = document.getElementById('privacy-content');
+            const termsContent = document.getElementById('terms-content');
+            const viewTitle = document.getElementById('view-title');
+            const viewIntro = document.getElementById('view-intro');
+            const buttons = document.querySelectorAll('button[onclick^="switchTab"]');
+
+            // Reset buttons
+            buttons.forEach(btn => {
+                btn.classList.remove('text-primary');
+                btn.classList.add('text-on-surface-variant');
+            });
+
+            if (tab === 'privacy') {
+                slider.style.transform = 'translateX(0)';
+                privacyContent.classList.remove('hidden');
+                termsContent.classList.add('hidden');
+                viewTitle.innerText = 'Privacy Policy';
+                viewIntro.innerText = 'Your privacy is our utmost priority. EduGuard GPS is designed with "Privacy by Design" principles to ensure that student location data is protected through rigorous institutional standards.';
+                buttons[0].classList.add('text-primary');
+                buttons[0].classList.remove('text-on-surface-variant');
+            } else {
+                slider.style.transform = 'translateX(100%)';
+                privacyContent.classList.add('hidden');
+                termsContent.classList.remove('hidden');
+                viewTitle.innerText = 'Terms of Service';
+                viewIntro.innerText = 'These terms govern your use of the EduGuard GPS system and outline the legal responsibilities between the student, the guardian, and the institution.';
+                buttons[1].classList.add('text-primary');
+                buttons[1].classList.remove('text-on-surface-variant');
+            }
+        }
+        
+        // Initialize state
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab('privacy');
+        });
+    </script>
+</body></html>

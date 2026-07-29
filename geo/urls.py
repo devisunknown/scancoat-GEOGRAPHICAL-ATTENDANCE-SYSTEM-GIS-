@@ -15,4 +15,5 @@ urlpatterns = [
     path('teacher/flagged/', views.flagged_entries_view, name='flagged_entries'),
     path('teacher/flagged/<int:entry_id>/approve/', views.approve_all_entries, name='approve_all_entries'),
     path('teacher/flagged/approve-all/', views.approve_all_entries_view, name='approve_all_entries_view'),
+    path('student/teacher/privacy policy',views.policy,name='privacy')
 ]

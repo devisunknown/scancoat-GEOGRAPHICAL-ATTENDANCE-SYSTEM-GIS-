@@ -423,3 +423,9 @@ def approve_all_entries_view(request):
             entry.save()
 
     return redirect('flagged_entries')
+
+
+
+
+def policy(request):
+    return render(request,'privacypolicy.html')

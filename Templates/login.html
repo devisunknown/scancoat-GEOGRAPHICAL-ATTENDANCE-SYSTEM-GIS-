@@ -157,7 +157,6 @@
 <div class="space-y-sm">
 <div class="flex justify-between items-center px-1">
 <label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
-<a class="font-label-md text-label-md text-primary hover:underline transition-all" href="#">Forgot Password?</a>
 </div>
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors" data-icon="lock">lock</span>
@@ -199,11 +198,12 @@
 <div class="flex items-center gap-sm text-on-surface-variant">
 <span class="material-symbols-outlined !text-[18px]" data-icon="security" data-weight="fill" style="font-variation-settings: 'FILL' 1;">security</span>
 <p class="font-label-md text-label-md">Protected by 256-bit GPS encryption</p>
+<p class="font-label-md text-label-md">Scancoat Systems ltd.</p>
 </div>
 <div class="flex gap-lg">
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
-<span class="font-label-md text-label-md text-outline">v2.4.0</span>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="{% url 'privacy' %}">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="{% url 'privacy' %}">Terms of Service</a>
+<span class="font-label-md text-label-md text-outline">v1.5.0</span>
 </div>
 </div>
 </footer>
