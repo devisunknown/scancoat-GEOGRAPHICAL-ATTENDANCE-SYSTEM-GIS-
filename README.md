@@ -24,7 +24,7 @@ this is an early preview
 
 * **Backend**: Python 3.12+, Django 5.x
 * **Frontend**: Django Templates, Tailwind CSS, Material Symbols Icons
-* **GIS / Mapping**: Google Static Maps API, Haversine/Proximity Distance Metrics
+* **GIS / Mapping**: Openstreetmap API, Haversine/Proximity Distance Metrics
 * **Database**: SQLite (Development) / PostgreSQL (Production)
 
 ---
