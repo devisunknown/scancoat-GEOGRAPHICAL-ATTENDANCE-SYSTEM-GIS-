@@ -25,18 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-2yaw)c5=vf(kggfv*^=9=m7925a$j$99c4&3f65)ss9*ke9tqa'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-ALLOWED_HOST=[]
-
+ALLOWED_HOSTS = []
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOST.append(RENDER_EXTERNAL_HOSTNAME)
-
-
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 # Application definition
 
 INSTALLED_APPS = [
