@@ -18,9 +18,8 @@ from rest_framework import status as http_status
 from .models import School, AttendanceRecord, Student, FlaggedEntry
 from .serializers import CheckInSerializer
 from django_ratelimit.decorators import ratelimit
+from datetime import date
 
-
-@ratelimit(key="ip", rate="60/m", block=True,method=['GET','POST'])
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371000  # Earth's radius in meters
     phi1, phi2 = radians(lat1), radians(lat2)
@@ -31,7 +30,6 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     return 2 * R * atan2(sqrt(a), sqrt(1 - a))
 
 
-@ratelimit(key="ip", rate="60/m", block=True,method=['GET','POST'])
 def get_date_label(record_date):
     today = timezone.localdate()
     if record_date == today:
@@ -42,7 +40,6 @@ def get_date_label(record_date):
         return record_date.strftime("%A")  
 
 
-@ratelimit(key="ip", rate="60/m", block=True,method=['GET','POST'])
 def is_staff_user(user):
     return user.is_staff
 
@@ -113,6 +110,15 @@ class CheckInView(APIView):
                 attendance_record=record,
                 flag_reason='radius',
             )
+             
+
+        if result_status == 'present':
+          if student.last_checkin_date == today - timedelta(days=1):
+           student.streak_count += 1
+        elif student.last_checkin_date != today:
+            student.streak_count = 1
+            student.last_checkin_date = today
+            student.save(update_fields=['streak_count', 'last_checkin_date'])
 
         return Response({
             'status': record.status,
@@ -154,9 +160,8 @@ def checkin(request):
         'checked_in_school_ids': checked_in_school_ids,
     })
 
-
 @login_required
-@ratelimit(key="ip", rate="60/m", block=True,method=['GET','POST'])
+@ratelimit(key='user', rate='10/m', method='GET', block=True)
 def attendance_history(request):
     student = getattr(request.user, 'student', None)
     if not student:
